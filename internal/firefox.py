@@ -225,6 +225,10 @@ class Firefox(DesktopBrowser):
                     if value is not None:
                         prefs[key] = value
         if prefs:
+            if self.options.browser_Name = 'FirefoxTP':
+                prefs["privacy.trackingprotection.annotate_channels"] = True
+                prefs["privacy.trackingprotection.enabled"] = True
+                prefs["privacy.trackingprotection.pbmode.enabled"] = True
             try:
                 self.marionette.set_prefs(prefs, True)
             except Exception:

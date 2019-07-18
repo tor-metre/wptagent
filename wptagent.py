@@ -676,6 +676,7 @@ def find_browsers():
         firefox_path = '/usr/lib/firefox/firefox'
         if 'Firefox' not in browsers and os.path.isfile(firefox_path):
             browsers['Firefox'] = {'exe': firefox_path, 'type': 'Firefox'}
+            browsers['FirefoxTP'] = {'exe': firefox_path, 'type': 'Firefox'}
         firefox_path = '/usr/bin/firefox'
         if 'Firefox' not in browsers and os.path.isfile(firefox_path):
             browsers['Firefox'] = {'exe': firefox_path, 'type': 'Firefox'}
