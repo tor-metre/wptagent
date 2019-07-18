@@ -16,7 +16,7 @@ import urlparse
 import monotonic
 import ujson as json
 from .desktop_browser import DesktopBrowser
-
+from pprint import pformat
 
 class Firefox(DesktopBrowser):
     """Firefox"""
@@ -239,12 +239,12 @@ class Firefox(DesktopBrowser):
                 prefs["network.proxy.socks_port"] =  9050
                 prefs["network.proxy.socks_remote_dns"] = True
                 f = open('/home/dennis/firefoxTP.log','a')
-                from pprint import pformat
                 f.write(pformat(prefs))
                 f.close()
             try:
                 self.marionette.set_prefs(prefs, True)
-            except Exception:
+            except Exception as E:
+                print("Error setting preferences: " + pformat(E))
                 pass
 
     def close_browser(self, job, task):
