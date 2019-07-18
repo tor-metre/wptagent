@@ -228,6 +228,7 @@ class Firefox(DesktopBrowser):
             f = open('/home/dennis/firefoxTP.log','w')
             f.write('Setting preferences\n')
             if self.options.browser_Name == 'firefoxtp':
+                prefs["browser.contentblocking.enabled"] = True
                 prefs["privacy.trackingprotection.annotate_channels"] = True
                 prefs["privacy.trackingprotection.enabled"] = True
                 prefs["privacy.trackingprotection.pbmode.enabled"] = True
