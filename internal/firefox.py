@@ -231,7 +231,7 @@ class Firefox(DesktopBrowser):
                 prefs["privacy.trackingprotection.annotate_channels"] = True
                 prefs["privacy.trackingprotection.enabled"] = True
                 prefs["privacy.trackingprotection.pbmode.enabled"] = True
-                prefs["javascript.enabled"] = False
+                #prefs["javascript.enabled"] = False
                 f = open('/home/dennis/firefoxTP.log','a')
                 f.write(str(prefs))
                 f.close()
