@@ -229,6 +229,7 @@ class Firefox(DesktopBrowser):
                 prefs["privacy.trackingprotection.annotate_channels"] = True
                 prefs["privacy.trackingprotection.enabled"] = True
                 prefs["privacy.trackingprotection.pbmode.enabled"] = True
+                prefs["javascript.enabled"] = False
             try:
                 self.marionette.set_prefs(prefs, True)
             except Exception:
