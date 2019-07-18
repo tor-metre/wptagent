@@ -234,7 +234,7 @@ class Firefox(DesktopBrowser):
                 #prefs["javascript.enabled"] = False
                 f = open('/home/dennis/firefoxTP.log','a')
                 from pprint import pformat
-                f.write(pformat(str(prefs)))
+                f.write(pformat(prefs))
                 f.close()
             try:
                 self.marionette.set_prefs(prefs, True)
