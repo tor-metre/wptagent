@@ -233,6 +233,11 @@ class Firefox(DesktopBrowser):
                 prefs["privacy.trackingprotection.enabled"] = True
                 prefs["privacy.trackingprotection.pbmode.enabled"] = True
                 #prefs["javascript.enabled"] = False
+                prefs["network.proxy.type"] = 1
+                prefs["network.proxy.socks_version"]  = 5
+                prefs["network.proxy.socks"] = '127.0.0.1'
+                prefs["network.proxy.socks_port"] =  9050
+                prefs["network.proxy.socks_remote_dns"] = True
                 f = open('/home/dennis/firefoxTP.log','a')
                 from pprint import pformat
                 f.write(pformat(prefs))
