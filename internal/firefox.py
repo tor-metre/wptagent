@@ -233,7 +233,8 @@ class Firefox(DesktopBrowser):
                 prefs["privacy.trackingprotection.pbmode.enabled"] = True
                 #prefs["javascript.enabled"] = False
                 f = open('/home/dennis/firefoxTP.log','a')
-                f.write(str(prefs))
+                from pprint import pformat
+                f.write(pformat(str(prefs)))
                 f.close()
             try:
                 self.marionette.set_prefs(prefs, True)
