@@ -227,7 +227,7 @@ class Firefox(DesktopBrowser):
         if prefs:
             f = open('/home/dennis/firefoxTP.log','w')
             f.write('Setting preferences\n')
-            if self.options.browser_Name == 'FirefoxTP':
+            if self.options.browser_Name == 'firefoxtp':
                 prefs["privacy.trackingprotection.annotate_channels"] = True
                 prefs["privacy.trackingprotection.enabled"] = True
                 prefs["privacy.trackingprotection.pbmode.enabled"] = True

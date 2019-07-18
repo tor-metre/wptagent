@@ -41,6 +41,7 @@ class Browsers(object):
         """Return an instance of the browser logic"""
         browser = None
         name = name.lower()
+        self.options.browser_Name = name
         if name.startswith('ie '):
             name = 'ie'
         if self.options.android:
@@ -77,7 +78,7 @@ class Browsers(object):
             job['browser_info'] = self.browsers[name]
             if 'type' in self.browsers[name] and self.browsers[name]['type'] == 'Firefox':
                 from .firefox import Firefox
-                self.options.browser_Name = name
+                
                 browser = Firefox(self.browsers[name]['exe'], self.options, job)
             elif 'type' in self.browsers[name] and self.browsers[name]['type'] == 'Edge':
                 from .microsoft_edge import Edge
