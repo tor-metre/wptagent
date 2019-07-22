@@ -229,11 +229,11 @@ class Firefox(DesktopBrowser):
                     if value is not None:
                         prefs[key] = value
         name = "" #TODO
-        customPrefs = customPrefs()
+        cPrefs = customPrefs()
         adjusted = set()
         for k in name.split('-'):
-            if k in customPrefs.keys():
-                newDict = customPrefs[k]
+            if k in cPrefs.keys():
+                newDict = cPrefs[k]
                 newKeys = set(newDict.keys())
                 overlap = newKeys.intersection(adjusted)
                 if len(overlap) > 0:
