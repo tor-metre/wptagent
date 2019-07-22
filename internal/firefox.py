@@ -16,7 +16,7 @@ import urlparse
 import monotonic
 import ujson as json
 from .desktop_browser import DesktopBrowser
-
+from firefox_custom_prefs import customPrefs
 
 class Firefox(DesktopBrowser):
     """Firefox"""
@@ -224,6 +224,19 @@ class Firefox(DesktopBrowser):
                     value = self.get_pref_value(matches.group(2).strip())
                     if value is not None:
                         prefs[key] = value
+        name = "" #TODO
+        customPrefs = customPrefs()
+        adjusted = set()
+        for k in name.split('-'):
+            if k in customPrefs.keys():
+                newDict = customPrefs[k]
+                newKeys = set(newDict.keys())
+                overlap = newKeys.intersection(adjusted)
+                if len(overlap) > 0:
+                    #Error, conflicting keys!
+                    raise RuntimeError("Conflicting preferences have been set: "+str(overlap))
+                prefs.update(newDict)
+                adjusted = adjusted.union(newKeys)
         if prefs:
             try:
                 self.marionette.set_prefs(prefs, True)
