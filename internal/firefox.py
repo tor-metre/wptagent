@@ -231,7 +231,7 @@ class Firefox(DesktopBrowser):
         name = self.options.browserName
         cPrefs = customPrefs()
         adjusted = set()
-        for k in name.split('-'):
+        for k in name.split('AAA'):
             if k in cPrefs.keys():
                 newDict = cPrefs[k]
                 newKeys = set(newDict.keys())
