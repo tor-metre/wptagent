@@ -41,6 +41,7 @@ class Browsers(object):
         """Return an instance of the browser logic"""
         browser = None
         name = name.lower()
+        self.options.browserName = name
         if name.startswith('ie '):
             name = 'ie'
         if self.options.android:

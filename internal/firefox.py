@@ -144,7 +144,7 @@ class Firefox(DesktopBrowser):
             extension_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                           'support', 'Firefox', 'extension')
             self.extension_id = self.addons.install(extension_path, temp=True)
-            name = "" #TODO 
+            name = self.options.browserName
             if 'ublock' in name: 
                 self.addons.install(os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                           'support', 'Firefox', 'ublock_origin-1.20.2-an+fx.xpi'))
@@ -228,7 +228,7 @@ class Firefox(DesktopBrowser):
                     value = self.get_pref_value(matches.group(2).strip())
                     if value is not None:
                         prefs[key] = value
-        name = "" #TODO
+        name = self.options.browserName
         cPrefs = customPrefs()
         adjusted = set()
         for k in name.split('-'):
