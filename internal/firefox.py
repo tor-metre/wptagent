@@ -144,6 +144,10 @@ class Firefox(DesktopBrowser):
             extension_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                           'support', 'Firefox', 'extension')
             self.extension_id = self.addons.install(extension_path, temp=True)
+            name = "" #TODO 
+            if 'ublock' in name: 
+                self.addons.install(os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                          'support', 'Firefox', 'ublock_origin-1.20.2-an+fx.xpi'))
             logging.debug('Resizing browser to %dx%d', task['width'], task['height'])
             self.marionette.set_window_rect(x=0, y=0, height=task['height'], width=task['width'])
             if 'browserVersion' in self.marionette.session_capabilities:
@@ -237,6 +241,8 @@ class Firefox(DesktopBrowser):
                     raise RuntimeError("Conflicting preferences have been set: "+str(overlap))
                 prefs.update(newDict)
                 adjusted = adjusted.union(newKeys)
+        if len(adjusted) == 0:
+            raise RuntimeError("No custom preferences have been set!")
         if prefs:
             try:
                 self.marionette.set_prefs(prefs, True)
