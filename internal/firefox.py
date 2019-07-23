@@ -145,9 +145,10 @@ class Firefox(DesktopBrowser):
                                           'support', 'Firefox', 'extension')
             self.extension_id = self.addons.install(extension_path, temp=True)
             name = self.options.browserName
-            if 'ublock' in name: 
+            from internal.firefox_custom_prefs import getFeatureFlags
+            if 'ublock' in getFeatureFlags(job['script']): 
                 self.addons.install(os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                          'support', 'Firefox', 'ublock_origin-1.20.2-an+fx.xpi'))
+                                          'support', 'Firefox', 'ublock_origin-1.20.2-an+fx.xpi'),temp=True)
             logging.debug('Resizing browser to %dx%d', task['width'], task['height'])
             self.marionette.set_window_rect(x=0, y=0, height=task['height'], width=task['width'])
             if 'browserVersion' in self.marionette.session_capabilities:

@@ -55,6 +55,6 @@ def getFeatureFlags(script):
         if 'FEATURES:' in l:
             tokens = l.split(':')[1]
             flags = tokens.split(',')
-            formattedFlags = list(map(lambda x : x.strip(), flags))
+            formattedFlags = list(map(lambda x : x.strip().lower(), flags))
             return formattedFlags
     return []
