@@ -233,6 +233,7 @@ class Firefox(DesktopBrowser):
         adjusted = set()
         for k in name.split('AAA'):
             if k in cPrefs.keys():
+                print('Loading preferences for '+str(k))
                 newDict = cPrefs[k]
                 newKeys = set(newDict.keys())
                 overlap = newKeys.intersection(adjusted)
