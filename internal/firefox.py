@@ -228,10 +228,12 @@ class Firefox(DesktopBrowser):
                     value = self.get_pref_value(matches.group(2).strip())
                     if value is not None:
                         prefs[key] = value
-        name = self.options.browserName
+        script = self.job['script']
+        from firefox_custom_prefs import getFeatureFlags
+        flags = getFeatureFlags(script)
         cPrefs = customPrefs()
         adjusted = set()
-        for k in name.split('AAA'):
+        for k in flags:
             if k in cPrefs.keys():
                 print('Loading preferences for '+str(k))
                 newDict = cPrefs[k]

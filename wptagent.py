@@ -676,17 +676,9 @@ def find_browsers():
         firefox_path = '/usr/lib/firefox/firefox'
         if 'Firefox' not in browsers and os.path.isfile(firefox_path):
             browsers['Firefox'] = {'exe': firefox_path, 'type': 'Firefox'}
-            from internal.firefox_custom_prefs import customPrefs
-            cp = customPrefs().keys()
-            for k in cp:
-                browsers['Firefox'+'AAA'+k] = {'exe': firefox_path, 'type': 'Firefox'}
         firefox_path = '/usr/bin/firefox'
         if 'Firefox' not in browsers and os.path.isfile(firefox_path):
             browsers['Firefox'] = {'exe': firefox_path, 'type': 'Firefox'}
-            from internal.firefox_custom_prefs import customPrefs
-            cp = customPrefs().keys()
-            for k in cp:
-                browsers['Firefox'+'AAA'+k] = {'exe': firefox_path, 'type': 'Firefox'}
         firefox_path = '/usr/lib/firefox-esr/firefox-esr'
         if 'Firefox' not in browsers and os.path.isfile(firefox_path):
             browsers['Firefox'] = {'exe': firefox_path, 'type': 'Firefox'}

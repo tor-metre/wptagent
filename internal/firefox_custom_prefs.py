@@ -49,3 +49,12 @@ def customPrefs():
         "network.proxy.socks_remote_dns" : False  
     }
     return prefs
+
+def getFeatureFlags(script):
+    for l in script.split('\n'):
+        if 'FEATURES:' in l:
+            tokens = l.split(':')[1]
+            flags = tokens.split(',')
+            formattedFlags = list(map(lambda x : x.strip(), flags))
+            return formattedFlags
+    return []
