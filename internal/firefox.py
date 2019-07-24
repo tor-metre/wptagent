@@ -148,7 +148,7 @@ class Firefox(DesktopBrowser):
             capabilities = dict()
             if 'ignoreSSL' in job and job['ignoreSSL']:
                 capabilities = {'acceptInsecureCerts': True}
-            logging.waring("Starting Marionette Session")
+            logging.warning("Starting Marionette Session")
             self.marionette.start_session(timeout=self.task['time_limit'], capabilities=capabilities)
             self.configure_prefs()
             logging.warning("Configured preferences")
@@ -212,7 +212,7 @@ class Firefox(DesktopBrowser):
                 # Wait for the browser startup to finish
                 DesktopBrowser.wait_for_idle(self)
         except Exception as err:
-            logging.exception("Error starting Firefox")
+            logging.exception("Error starting Firefox " + str(err))
             task['error'] = 'Error starting Firefox: {0}'.format(err.__str__())
 
     def get_pref_value(self, value):
