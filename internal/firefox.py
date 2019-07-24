@@ -141,14 +141,17 @@ class Firefox(DesktopBrowser):
             command_line = self.path
         command_line += ' ' + ' '.join(args)
         command_line = self.disable_fsync(command_line)
+        logging.warning("Running firefox with command: "+ command_line)
         DesktopBrowser.launch_browser(self, command_line)
         try:
             self.marionette = Marionette('localhost', port=2828)
             capabilities = dict()
             if 'ignoreSSL' in job and job['ignoreSSL']:
                 capabilities = {'acceptInsecureCerts': True}
+            logging.waring("Starting Marionette Session")
             self.marionette.start_session(timeout=self.task['time_limit'], capabilities=capabilities)
             self.configure_prefs()
+            logging.warning("Configured preferences")
             #TODO What to do about the enviornment /CWD? tb-selenium sets some enviroment prefs, changed directory, etc.
             logging.debug('Installing extension')
             self.addons = Addons(self.marionette)
