@@ -64,7 +64,8 @@ class Firefox(DesktopBrowser):
         logging.debug('MOZ_LOG = %s', moz_log_env)
         DesktopBrowser.prepare(self, job, task)
         if self.tor:
-            #TODO - Load the Tor Profile Directory
+            profile_template = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                        'support', 'Firefox', 'tor-profile')
         else:
             profile_template = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                         'support', 'Firefox', 'profile')
@@ -130,7 +131,7 @@ class Firefox(DesktopBrowser):
                 '-marionette',
                 'about:blank']
         if self.tor:
-            #TODO Add class argument 
+            args.extend(['--class','"Tor Browser"'])
         if self.path.find(' ') > -1:
             command_line = '"{0}"'.format(self.path)
         else:
@@ -140,14 +141,12 @@ class Firefox(DesktopBrowser):
         DesktopBrowser.launch_browser(self, command_line)
         try:
             self.marionette = Marionette('localhost', port=2828)
-            capabilities = None
+            capabilities = dict()
             if 'ignoreSSL' in job and job['ignoreSSL']:
                 capabilities = {'acceptInsecureCerts': True}
-            if self.tor:
-                #TODO Patch Capabilities
             self.marionette.start_session(timeout=self.task['time_limit'], capabilities=capabilities)
             self.configure_prefs()
-            #TODO What to do about the neviornment?
+            #TODO What to do about the enviornment /CWD?
             logging.debug('Installing extension')
             self.addons = Addons(self.marionette)
             extension_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
@@ -225,12 +224,13 @@ class Firefox(DesktopBrowser):
             value = None
         return value
 
+
     def configure_prefs(self):
         """Load the prefs file and configure them through Marionette"""
         prefs = {}
         if self.tor:
-            #Path to Tor Prefs file
-            #Set Tor Specific Prreferences
+            prefs_file = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                  'support', 'Firefox', 'tor-profile', 'prefs.js')
         else:
             prefs_file = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                   'support', 'Firefox', 'profile', 'prefs.js')
@@ -260,6 +260,10 @@ class Firefox(DesktopBrowser):
                 adjusted = adjusted.union(newKeys)
         if len(adjusted) == 0:
             raise RuntimeError("No custom preferences have been set!")
+        if self.tor:
+            from tor_custom_prefs import getTorPrefs
+            torSpecific = getTorPrefs()
+            prefs.update(torSpecific)
         if prefs:
             try:
                 self.marionette.set_prefs(prefs, True)
