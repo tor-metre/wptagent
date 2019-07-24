@@ -20,9 +20,10 @@ from firefox_custom_prefs import customPrefs
 
 class Firefox(DesktopBrowser):
     """Firefox"""
-    def __init__(self, path, options, job):
+    def __init__(self, path, options, job,tor=False):
         DesktopBrowser.__init__(self, path, options, job)
         self.job = job
+        self.tor = tor
         self.task = None
         self.options = options
         self.path = path
@@ -62,7 +63,10 @@ class Firefox(DesktopBrowser):
         os.environ["MOZ_LOG"] = moz_log_env
         logging.debug('MOZ_LOG = %s', moz_log_env)
         DesktopBrowser.prepare(self, job, task)
-        profile_template = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+        if self.tor:
+            #TODO - Load the Tor Profile Directory
+        else:
+            profile_template = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                         'support', 'Firefox', 'profile')
         if not task['cached'] and os.path.isdir(profile_template):
             try:
@@ -125,6 +129,8 @@ class Firefox(DesktopBrowser):
                 '-no-remote',
                 '-marionette',
                 'about:blank']
+        if self.tor:
+            #TODO Add class argument 
         if self.path.find(' ') > -1:
             command_line = '"{0}"'.format(self.path)
         else:
@@ -137,8 +143,11 @@ class Firefox(DesktopBrowser):
             capabilities = None
             if 'ignoreSSL' in job and job['ignoreSSL']:
                 capabilities = {'acceptInsecureCerts': True}
+            if self.tor:
+                #TODO Patch Capabilities
             self.marionette.start_session(timeout=self.task['time_limit'], capabilities=capabilities)
             self.configure_prefs()
+            #TODO What to do about the neviornment?
             logging.debug('Installing extension')
             self.addons = Addons(self.marionette)
             extension_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
@@ -219,7 +228,11 @@ class Firefox(DesktopBrowser):
     def configure_prefs(self):
         """Load the prefs file and configure them through Marionette"""
         prefs = {}
-        prefs_file = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+        if self.tor:
+            #Path to Tor Prefs file
+            #Set Tor Specific Prreferences
+        else:
+            prefs_file = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                   'support', 'Firefox', 'profile', 'prefs.js')
         with open(prefs_file) as f_in:
             for line in f_in:
