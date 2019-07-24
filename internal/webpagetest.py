@@ -411,7 +411,7 @@ class WebPageTest(object):
                                 browsers[name]['version']))
                 browsers = ','.join(versions)
                 url += '&browsers=' + urllib.quote_plus(browsers)
-            logging.info("Checking for work: %s", url)
+            logging.debug("Checking for work: %s", url)
             try:
                 response = self.session.get(url, timeout=30, proxies=proxies)
                 if self.options.alive:
