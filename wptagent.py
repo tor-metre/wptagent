@@ -694,6 +694,10 @@ def find_browsers():
             browsers['Firefox Nightly'] = {'exe': nightly_path,
                                            'type': 'Firefox',
                                            'log_level': 5}
+        tor_path = "/home/dennis/tor-browser/Browser/firefox"
+        if 'Tor Browser' not in browsers and os.path.isfile(tor_path):
+            browsers['Tor Browser'] = {'exe': tor_path,
+                                           'type': 'Firefox',}
     elif plat == "Darwin":
         chrome_path = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
         if 'Chrome' not in browsers and os.path.isfile(chrome_path):

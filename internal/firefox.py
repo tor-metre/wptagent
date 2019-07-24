@@ -20,10 +20,13 @@ from firefox_custom_prefs import customPrefs
 
 class Firefox(DesktopBrowser):
     """Firefox"""
-    def __init__(self, path, options, job,tor=False):
+    def __init__(self, path, options, job):
         DesktopBrowser.__init__(self, path, options, job)
+        if options.browserName == 'Tor Browser':
+            self.tor = True
+        else:
+            self.tor = False
         self.job = job
-        self.tor = tor
         self.task = None
         self.options = options
         self.path = path
