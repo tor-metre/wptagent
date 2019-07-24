@@ -149,7 +149,7 @@ class Firefox(DesktopBrowser):
                 capabilities = {'acceptInsecureCerts': True}
             self.marionette.start_session(timeout=self.task['time_limit'], capabilities=capabilities)
             self.configure_prefs()
-            #TODO What to do about the enviornment /CWD?
+            #TODO What to do about the enviornment /CWD? tb-selenium sets some enviroment prefs, changed directory, etc.
             logging.debug('Installing extension')
             self.addons = Addons(self.marionette)
             extension_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
