@@ -22,9 +22,11 @@ class Firefox(DesktopBrowser):
     """Firefox"""
     def __init__(self, path, options, job):
         DesktopBrowser.__init__(self, path, options, job)
-        if options.browserName == 'Tor Browser':
+        logging.warning('Mode: '+str(options.browserName))
+        if options.browserName == 'tor browser':
             self.tor = True
         else:
+
             self.tor = False
         self.job = job
         self.task = None
@@ -52,10 +54,17 @@ class Firefox(DesktopBrowser):
         self.last_activity = monotonic.monotonic()
         self.script_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'js')
         self.start_page = 'http://127.0.0.1:8888/orange.html'
+        if self.tor:
+            from tor_custom_prefs import envSetup
+            tbb_path = "/home/dennis/Primary/"
+            envSetup(tbb_path)
 
     def prepare(self, job, task):
         """Prepare the profile/OS for the browser"""
         self.moz_log = os.path.join(task['dir'], 'moz.log')
+        if self.tor:
+            # Tor Browser processors are locked down to their directory (I think. Either way, it doesn't work without this.)
+            task['profile'] = '/home/dennis/Primary/Browser/TorBrowser/Data/Browser'+ task['profile']
         self.log_pos = {}
         self.page = {}
         self.requests = {}
@@ -112,7 +121,7 @@ class Firefox(DesktopBrowser):
 
     def disable_fsync(self, command_line):
         """Use eatmydata if it is installed to disable fsync"""
-        if platform.system() == 'Linux':
+        if platform.system() == 'Linux' and not self.tor:
             try:
                 cmd = ['eatmydata', 'date']
                 logging.debug(' '.join(cmd))
@@ -145,11 +154,21 @@ class Firefox(DesktopBrowser):
         DesktopBrowser.launch_browser(self, command_line)
         try:
             self.marionette = Marionette('localhost', port=2828)
-            capabilities = dict()
-            if 'ignoreSSL' in job and job['ignoreSSL']:
+            capabilities = {
+                "marionette": True,
+                "capabilities": {
+                    "alwaysMatch": {
+                        "moz:firefoxOptions": {
+                            "log": {"level": "info"}
+                        }
+                    }
+                }
+            }
+            if 'ignoreSSL' in job and job['ignoreSSL'] and not self.tor:
                 capabilities = {'acceptInsecureCerts': True}
             logging.warning("Starting Marionette Session")
             self.marionette.start_session(timeout=self.task['time_limit'], capabilities=capabilities)
+            logging.warning('Marionette has connected.')
             self.configure_prefs()
             logging.warning("Configured preferences")
             #TODO What to do about the enviornment /CWD? tb-selenium sets some enviroment prefs, changed directory, etc.
@@ -160,7 +179,7 @@ class Firefox(DesktopBrowser):
             self.extension_id = self.addons.install(extension_path, temp=True)
             name = self.options.browserName
             from internal.firefox_custom_prefs import getFeatureFlags
-            if 'ublock' in getFeatureFlags(job['script']): 
+            if 'script' in job.keys() and 'ublock' in getFeatureFlags(job['script']): 
                 self.addons.install(os.path.join(os.path.abspath(os.path.dirname(__file__)),
                                           'support', 'Firefox', 'ublock_origin-1.20.2-an+fx.xpi'),temp=True)
             logging.debug('Resizing browser to %dx%d', task['width'], task['height'])
@@ -248,32 +267,33 @@ class Firefox(DesktopBrowser):
                     value = self.get_pref_value(matches.group(2).strip())
                     if value is not None:
                         prefs[key] = value
-        script = self.job['script']
-        from firefox_custom_prefs import getFeatureFlags
-        flags = getFeatureFlags(script)
-        cPrefs = customPrefs()
-        adjusted = set()
-        for k in flags:
-            if k in cPrefs.keys():
-                print('Loading preferences for '+str(k))
-                newDict = cPrefs[k]
-                newKeys = set(newDict.keys())
-                overlap = newKeys.intersection(adjusted)
-                if len(overlap) > 0:
-                    #Error, conflicting keys!
-                    raise RuntimeError("Conflicting preferences have been set: "+str(overlap))
-                prefs.update(newDict)
-                adjusted = adjusted.union(newKeys)
-        if len(adjusted) == 0:
-            raise RuntimeError("No custom preferences have been set!")
+        if 'script' in self.job.keys():
+            script = self.job['script']
+            from firefox_custom_prefs import getFeatureFlags
+            flags = getFeatureFlags(script)
+            cPrefs = customPrefs()
+            adjusted = set()
+            for k in flags:
+                if k in cPrefs.keys():
+                    print('Loading preferences for '+str(k))
+                    newDict = cPrefs[k]
+                    newKeys = set(newDict.keys())
+                    overlap = newKeys.intersection(adjusted)
+                    if len(overlap) > 0:
+                        #Error, conflicting keys!
+                        raise RuntimeError("Conflicting preferences have been set: "+str(overlap))
+                    prefs.update(newDict)
+                    adjusted = adjusted.union(newKeys)
         if self.tor:
             from tor_custom_prefs import getTorPrefs
             torSpecific = getTorPrefs()
             prefs.update(torSpecific)
         if prefs:
             try:
-                self.marionette.set_prefs(prefs, True)
-            except Exception:
+                logging.debug("Setting preferences: "+str(prefs))
+                self.marionette.set_prefs(prefs)#,default_branch=True)#, True)
+            except Exception as err:
+                logging.warning("Error Setting preferences: "+str(err))
                 pass
 
     def close_browser(self, job, task):
