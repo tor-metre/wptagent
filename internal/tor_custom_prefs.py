@@ -57,7 +57,7 @@ def getTorPrefs():
     set_pref('extensions.torbutton.versioncheck_enabled', False)
     set_pref('extensions.torbutton.prompted_language', True)
     # Configure Firefox to use Tor SOCKS proxy
-    #set_pref('network.proxy.socks_port', socks_Port)
+    set_pref('network.proxy.socks_port', socks_Port)
     set_pref('extensions.torbutton.socks_port', socks_Port)
     set_pref('extensions.torlauncher.control_port', control_port)
     set_pref('extensions.torlauncher.start_tor', False)
