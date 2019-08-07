@@ -3,7 +3,6 @@ def customPrefs():
     prefs['original'] = {
         "browser.safebrowsing.provider.mozilla.updateURL " : "",
         "browser.safebrowsing.provider.mozilla.gethashURL": "",
-        "network.proxy.type": 0,
         "privacy.trackingprotection.annotate_channels": False,
         "privacy.trackingprotection.enabled": False,
         "privacy.trackingprotection.pbmode.enabled": False

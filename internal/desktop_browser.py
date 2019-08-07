@@ -273,8 +273,8 @@ class DesktopBrowser(BaseBrowser):
         if platform.system() == 'Windows':
             self.proc = subprocess.Popen(command_line, shell=True)
         else:
-            fflog = file('/home/dennis/fflog.txt','w')
-            self.proc = subprocess.Popen(command_line, preexec_fn=os.setsid, shell=True,stdout=fflog,stderr=fflog)
+            #fflog = file('/home/dennis/fflog.txt','w') Browser log file
+            self.proc = subprocess.Popen(command_line, preexec_fn=os.setsid, shell=True)#,stdout=fflog,stderr=fflog)
 
     def close_browser(self, job, _task):
         """Terminate the browser but don't do all of the cleanup that stop does"""

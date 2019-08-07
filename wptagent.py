@@ -483,7 +483,7 @@ def get_windows_build():
     return int(output.strip().split(' ')[-1])
 
 
-def find_browsers():
+def find_browsers(torbrowser):
     """Find the various known-browsers in case they are not explicitly configured"""
     browsers = parse_ini(os.path.join(os.path.dirname(__file__), "browsers.ini"))
     if browsers is None:
@@ -694,10 +694,14 @@ def find_browsers():
             browsers['Firefox Nightly'] = {'exe': nightly_path,
                                            'type': 'Firefox',
                                            'log_level': 5}
-        tor_path = "/home/dennis/Primary/Browser/firefox.real"
-        if 'Tor Browser' not in browsers and os.path.isfile(tor_path):
-            browsers['Tor Browser'] = {'exe': tor_path,
-                                           'type': 'Firefox',}
+        if torbrowser:
+            tor_path = torbrowser + '/Browser/firefox.real' #TODO Use constant in tor_custom_prefs
+            # "/home/dennis/Primary/Browser/firefox.real"
+            if 'Tor Browser' not in browsers and os.path.isfile(tor_path):
+                browsers['Tor Browser'] = {'exe': tor_path,
+                                            'type': 'Firefox',}
+            elif 'Tor Browser' not in browsers:
+                raise Exception("Tor Browser path provided but could not find binary")
     elif plat == "Darwin":
         chrome_path = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
         if 'Chrome' not in browsers and os.path.isfile(chrome_path):
@@ -786,7 +790,8 @@ def main():
     parser.add_argument('--noidle', action='store_true', default=False,
                         help="Do not wait for system idle at startup.")
     parser.add_argument('--collectversion', action='store_true', default=False,
-                        help="Collection browser versions and submit to controller.")                        
+                        help="Collection browser versions and submit to controller.")
+    parser.add_argument('--torbrowser',default=None,help="Location of the Tor Browser Directory")                        
 
     # Video capture/display settings
     parser.add_argument('--xvfb', action='store_true', default=False,
@@ -924,7 +929,7 @@ def main():
 
     browsers = None
     if not options.android and not options.iOS:
-        browsers = find_browsers()
+        browsers = find_browsers(options.torbrowser)
         if len(browsers) == 0:
             print "No browsers configured. Check that browsers.ini is present and correct."
             exit(1)

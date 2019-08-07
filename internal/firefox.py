@@ -56,7 +56,7 @@ class Firefox(DesktopBrowser):
         self.start_page = 'http://127.0.0.1:8888/orange.html'
         if self.tor:
             from tor_custom_prefs import envSetup
-            tbb_path = "/home/dennis/Primary/"
+            tbb_path = self.options.torbrowser
             envSetup(tbb_path)
 
     def prepare(self, job, task):
@@ -64,7 +64,7 @@ class Firefox(DesktopBrowser):
         self.moz_log = os.path.join(task['dir'], 'moz.log')
         if self.tor:
             # Tor Browser processors are locked down to their directory (I think. Either way, it doesn't work without this.)
-            task['profile'] = '/home/dennis/Primary/Browser/TorBrowser/Data/Browser'+ task['profile']
+            task['profile'] = self.options.torbrowser+'/Browser/TorBrowser/Data/Browser'+ task['profile']
         self.log_pos = {}
         self.page = {}
         self.requests = {}
