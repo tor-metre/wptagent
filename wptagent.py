@@ -725,7 +725,8 @@ def find_browsers():
         try:
             # make sure marionette is up to date
             from internal.os_util import run_elevated
-            run_elevated(sys.executable, '-m pip install --upgrade marionette_driver')
+            pass #Marionette 7.5.0 seems to be broken.
+            #run_elevated(sys.executable, '-m pip install --upgrade marionette_driver')
         except Exception:
             pass
 
