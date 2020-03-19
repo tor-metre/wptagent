@@ -326,6 +326,8 @@ class WebPageTest(object):
                         self.fps = int(re.search(r'\d+', str(value)).group())
                     elif key == 'fps':
                         self.fps = int(re.search(r'\d+', str(value)).group())
+                    elif key == 'tor_browser':
+                        self.torbrowser = value
             except Exception:
                 pass
 
